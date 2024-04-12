@@ -5,6 +5,7 @@
  */
 public class LeadTriggerHandler extends TriggerHandler{
 
+    //trigger context variables
     private List<Lead> newLeads;
     private Map<Id, Lead> newMap;
     private Map<Id, Lead> oldMap;
@@ -17,27 +18,29 @@ public class LeadTriggerHandler extends TriggerHandler{
 
     /**executes when a Lead is committed to database */
     public override void afterInsert(){
-        List<Id> leadIds = new List<Id>();  
+        Map<Id, Boolean> leadIdsToIsOppCreate = new Map<Id, Boolean>(); // Map of to be converted Lead Ids to flag option for creating an Opportunity
         for(Lead lead : newLeads){
-            if(lead.Email <> null && lead.Phone <> null){   // verifying Lead to convert
-                leadIds.add(lead.Id);
+            if(lead.Email <> null && lead.Phone <> null){               // verifying Lead to convert
+                leadIdsToIsOppCreate.put(lead.Id, true);
             }
         }
-        if(!leadIds.isEmpty()){
-            LeadUtility.convertLeadsToContacts(leadIds, true);  // converts verified Leads to Contacts
+        if(!leadIdsToIsOppCreate.isEmpty()){
+            LeadUtility.convertLeadsToContacts(leadIdsToIsOppCreate);   // converts verified Leads to Contacts
         }
     }
 
     /**executes when a Lead is updated and committed to database */
     public override void afterUpdate(){
-        List<Id> leadIds = new List<Id>();
+        Map<Id, Boolean> leadIdsToIsOppCreate = new Map<Id, Boolean>();                             // Map of to be converted Lead Ids to flag option for creating an Opportunity
         for (Lead lead : newLeads) {
-            if(LeadUtility.isChanged(lead, oldMap.get(lead.Id), 'Email') && lead.Email <> null && LeadUtility.isChanged(lead, oldMap.get(lead.Id), 'Phone') && lead.Phone <> null){ // verifying Lead to convert
-                leadIds.add(lead.Id);
+            if(LeadUtility.isChanged(lead, oldMap.get(lead.Id), 'Email') && lead.Email <> null 
+            && LeadUtility.isChanged(lead, oldMap.get(lead.Id), 'Phone') && lead.Phone <> null){    // verifying Lead to convert
+                
+                leadIdsToIsOppCreate.put(lead.Id, true);
             }
         }
-        if(!leadIds.isEmpty()){
-            LeadUtility.convertLeadsToContacts(leadIds, true);  // converts verified Leads to Contacts
+        if(!leadIdsToIsOppCreate.isEmpty()){
+            LeadUtility.convertLeadsToContacts(leadIdsToIsOppCreate);                               // converts verified Leads to Contacts
         }
     }
 }

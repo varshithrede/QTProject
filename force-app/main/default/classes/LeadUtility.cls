@@ -1,31 +1,41 @@
 public with sharing class LeadUtility {
     
+    public final static String CLOSED_CONVERTED = 'Closed - Converted';
+
     /**
      * @author      : Varshith
      * @description : Converts verified Leads to Contacts
      * @create on   : 04/10/20240
-     * @param       : List of Lead Ids.
-     * @param       : Boolean - sets whether to create an Opportunity while Lead conversion
+     * @param       : Map<Id, Boolean> -  Map of Lead Ids to Boolean flag to create an Opportunity while Lead conversion.
     */
-    public static void convertLeadsToContacts(List<Id> leadIds, Boolean isOppCreate){
+    public static void convertLeadsToContacts(Map<Id, Boolean> leadIdsToIsOppCreate){
         try {
             List<Database.leadConvert> convertLeads = new List<Database.leadConvert>();
-            for(Id leadId : leadIds){
+            for(Id leadId : leadIdsToIsOppCreate.keySet()){
                 Database.leadConvert leadConvert = new Database.leadConvert();
-                leadConvert.setLeadId ( leadId );                
-                leadConvert.setConvertedStatus('Closed - Converted');
-                leadConvert.setDoNotCreateOpportunity(isOppCreate); 
+                leadConvert.setLeadId (leadId);                
+                leadConvert.setConvertedStatus(CLOSED_CONVERTED);
+                leadConvert.setDoNotCreateOpportunity(leadIdsToIsOppCreate.get(leadId)); 
                 convertLeads.add(leadConvert);
             }
             if (!convertLeads.isEmpty()) {
-                List<Database.LeadConvertResult> leadConvRes = Database.convertLead(convertLeads);
+                List<Database.LeadConvertResult> leadConvRes = Database.convertLead(convertLeads);  //converting Leads
             }
         } catch (Exception ex) {
             System.debug('convertLeadsToContacts ERROR: '+ ex.getMessage() + ' at line: '+ex.getLineNumber());
-            //can log to an error object.
+            //logging exception to Exception_Log__c object.
+            UtilityWrapper.ExceptionWrapper errorLog = new UtilityWrapper.ExceptionWrapper('LeadUtility', 'convertLeadsToContacts', ex.getMessage(), 'Lead conversion failed, please check error message.', ex.getLineNumber());
+            Logger.createExceptionLog(errorLog);
         }
     }
 
+    /**
+     * method to check and return True/False if a field value is udpated 
+     * @param   : SObject - updated new SObject record
+     * @param   : SObject - updated old SObject record
+     * @param   : String - FieldApiName of field.
+     * @return  : Boolean  - returns true if passed param field is udpated
+     */
     public static Boolean isChanged(SObject newRecord, SObject oldRecord, String fieldApiName){
         return newRecord <> null && oldRecord <> null && String.isNotBlank(fieldApiName) && newRecord.get(fieldApiName) <> oldRecord.get(fieldApiName);
     }
