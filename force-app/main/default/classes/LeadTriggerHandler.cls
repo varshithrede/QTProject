@@ -3,7 +3,7 @@
  * @description : Trigger handler for Lead Trigger.
  * @created on  : 04/07/2024
  */
-public class LeadTriggerHandler extends TriggerHandler{
+public with sharing class LeadTriggerHandler extends TriggerHandler{
 
     //trigger context variables
     private List<Lead> newLeads;
@@ -16,7 +16,9 @@ public class LeadTriggerHandler extends TriggerHandler{
         oldMap = (Map<Id, Lead>) Trigger.oldMap;
     }
 
-    /**executes when a Lead is committed to database */
+    /**
+     * @description    : executes when a Lead is committed to database 
+     */
     public override void afterInsert(){
         Map<Id, Boolean> leadIdsToIsOppCreate = new Map<Id, Boolean>(); // Map of to be converted Lead Ids to flag option for creating an Opportunity
         for(Lead lead : newLeads){
@@ -29,13 +31,14 @@ public class LeadTriggerHandler extends TriggerHandler{
         }
     }
 
-    /**executes when a Lead is updated and committed to database */
+    /**
+     * @description     : executes when a Lead is updated and committed to database
+     */
     public override void afterUpdate(){
         Map<Id, Boolean> leadIdsToIsOppCreate = new Map<Id, Boolean>();                             // Map of to be converted Lead Ids to flag option for creating an Opportunity
         for (Lead lead : newLeads) {
             if(LeadUtility.isChanged(lead, oldMap.get(lead.Id), 'Email') && lead.Email <> null 
             && LeadUtility.isChanged(lead, oldMap.get(lead.Id), 'Phone') && lead.Phone <> null){    // verifying Lead to convert
-                
                 leadIdsToIsOppCreate.put(lead.Id, true);
             }
         }

@@ -6,16 +6,17 @@ public with sharing class Logger {
 
     /**
      * @author      : Varshith
-     * @description : method to log exceptions occurred in Apex transactions. Exception_Log__c is used to log records.
-     * @param       : ExceptionWrapper
+     * @description : method to log exceptions occurred in Apex transactions. Logger__c is used to log records.
+     * @param       : LoggerWrapper
      */
-    public static void createExceptionLog(UtilityWrapper.ExceptionWrapper data){
+    public static void createExceptionLog(UtilityWrapper.LoggerWrapper data){
         if(data == null){
             return;
         }
-
-        if(Schema.SobjectType.Exception_Log__c.isCreateable()){
-            insert new Exception_Log__c(
+        
+        if(Schema.SobjectType.Logger__c.isCreateable()){
+            insert new Logger__c(
+                Type__c = data.type,
                 Class_Name__c = data.className,
                 Method_Name__c = data.methodName,
                 Error_Message__c = data.errorMessage,
