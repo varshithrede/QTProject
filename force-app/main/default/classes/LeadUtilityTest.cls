@@ -44,7 +44,7 @@ private class LeadUtilityTest {
         Test.startTest();
         LeadUtility.convertLeadsToContacts(new Map<Id, Boolean>{null => true}); //passing null for an Id to throw Exception.
         Test.stopTest();
-        Exception_Log__c errorLog = [SELECT Id, Class_Name__c, Method_Name__c FROM Exception_Log__c LIMIT 1];
+        Logger__c errorLog = [SELECT Id, Class_Name__c, Method_Name__c FROM Logger__c LIMIT 1];
         System.assertEquals('LeadUtility', errorLog.Class_Name__c, 'error creating Exception logs');
         System.assertEquals('convertLeadsToContacts', errorLog.Method_Name__c, 'error creating Exception logs');
     }

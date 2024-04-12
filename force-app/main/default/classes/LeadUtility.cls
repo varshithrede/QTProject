@@ -1,3 +1,8 @@
+/**
+ * @description       : Utility class for Lead Object.
+ * @author            : Varshith
+ * @modification log
+ */
 public with sharing class LeadUtility {
     
     public final static String CLOSED_CONVERTED = 'Closed - Converted';
@@ -5,6 +10,7 @@ public with sharing class LeadUtility {
     /**
      * @author      : Varshith
      * @description : Converts verified Leads to Contacts
+     * @info        : Standard duplicate rule on Contact will take care of duplicates while Lead insertion and update.
      * @create on   : 04/10/20240
      * @param       : Map<Id, Boolean> -  Map of Lead Ids to Boolean flag to create an Opportunity while Lead conversion.
     */
@@ -23,8 +29,8 @@ public with sharing class LeadUtility {
             }
         } catch (Exception ex) {
             System.debug('convertLeadsToContacts ERROR: '+ ex.getMessage() + ' at line: '+ex.getLineNumber());
-            //logging exception to Exception_Log__c object.
-            UtilityWrapper.ExceptionWrapper errorLog = new UtilityWrapper.ExceptionWrapper('LeadUtility', 'convertLeadsToContacts', ex.getMessage(), 'Lead conversion failed, please check error message.', ex.getLineNumber());
+            //logging exception to Logger__c object.
+            UtilityWrapper.LoggerWrapper errorLog = new UtilityWrapper.LoggerWrapper('LeadUtility', 'convertLeadsToContacts', ex.getMessage(), 'Lead conversion failed, please check error message.', ex.getLineNumber(), 'Error');
             Logger.createExceptionLog(errorLog);
         }
     }
