@@ -1,6 +1,6 @@
 public with sharing class LeadUtility {
     
-    public static String CLOSED_CONVERTED = 'Closed - Converted';
+    public final static String CLOSED_CONVERTED = 'Closed - Converted';
 
     /**
      * @author      : Varshith
@@ -23,7 +23,9 @@ public with sharing class LeadUtility {
             }
         } catch (Exception ex) {
             System.debug('convertLeadsToContacts ERROR: '+ ex.getMessage() + ' at line: '+ex.getLineNumber());
-            //can log to an error object.
+            //logging exception to Exception_Log__c object.
+            UtilityWrapper.ExceptionWrapper errorLog = new UtilityWrapper.ExceptionWrapper('LeadUtility', 'convertLeadsToContacts', ex.getMessage(), 'Lead conversion failed, please check error message.', ex.getLineNumber());
+            Logger.createExceptionLog(errorLog);
         }
     }
 
