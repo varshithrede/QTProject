@@ -2,7 +2,7 @@
  * @author      : Varshith
  * @description : Class to log exceptions and other info
  */
-public with sharing class Logger {
+public class Logger {
 
     /**
      * @author      : Varshith

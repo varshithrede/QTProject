@@ -30,7 +30,12 @@ public with sharing class LeadUtility {
         } catch (Exception ex) {
             System.debug('convertLeadsToContacts ERROR: '+ ex.getMessage() + ' at line: '+ex.getLineNumber());
             //logging exception to Logger__c object.
-            UtilityWrapper.LoggerWrapper errorLog = new UtilityWrapper.LoggerWrapper('LeadUtility', 'convertLeadsToContacts', ex.getMessage(), 'Lead conversion failed, please check error message.', ex.getLineNumber(), 'Error');
+            UtilityWrapper.LoggerWrapper errorLog = new UtilityWrapper.LoggerWrapper('LeadUtility', 
+                                                                                    'convertLeadsToContacts',
+                                                                                    ex.getMessage(), 
+                                                                                    'Lead conversion failed, please check error message.', 
+                                                                                    ex.getLineNumber(),
+                                                                                    'Error');
             Logger.createExceptionLog(errorLog);
         }
     }
@@ -43,6 +48,9 @@ public with sharing class LeadUtility {
      * @return  : Boolean  - returns true if passed param field is udpated
      */
     public static Boolean isChanged(SObject newRecord, SObject oldRecord, String fieldApiName){
-        return newRecord <> null && oldRecord <> null && String.isNotBlank(fieldApiName) && newRecord.get(fieldApiName) <> oldRecord.get(fieldApiName);
+        return (newRecord <> null &&
+                oldRecord <> null && 
+                String.isNotBlank(fieldApiName) && 
+                newRecord.get(fieldApiName) <> oldRecord.get(fieldApiName));
     }
 }
